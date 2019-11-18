@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: {{ template "memcached.fullname" . }}-preinstall-run-shell
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "memcached.fullname" . }}-preinstall-run-shell
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  template:
+    metadata:
+      name: {{ template "memcached.fullname" . }}-preinstall-run-shell
+    spec:
+      containers:
+        - name: {{ template "memcached.fullname" . }}-preinstall-run-shell
+          command:
+          - /test/create-file.sh
+          volumeMounts:
+          - mountPath: "/test"
+            name: create-file
+      volumes:
+      - name: create-file
+        configMap:
+          name: {{ template "memcached.fullname" . }}-preinstall-create-shell
+          defaultMode: 0755
