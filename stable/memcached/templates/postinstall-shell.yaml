@@ -2,11 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    app: {{ template "search.fullname" . }}-postinstall-shell
+    app: {{ template "memcached.fullname" . }}-postinstall-shell
     chart: {{.Chart.Name}}-{{.Chart.Version}}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "search.fullname" . }}-create-redis-secret
+  name: {{ template "memcached.fullname" . }}-postinstall-shell
   annotations:
     "helm.sh/hook": "post-install,post-upgrade"
     "helm.sh/hook-delete-policy": hook-succeeded
