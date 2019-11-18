@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "search.fullname" . }}-postinstall-shell
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "search.fullname" . }}-create-redis-secret
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
+    "helm.sh/hook-delete-policy": hook-succeeded
+data:
+  create-cm.sh: |
+    #!/bin/sh
+    if  (!(kubectl get secret {{ template "search.fullname" . }}-post-install-shell));
+    then
+      kubectl create secret generic {{ template "search.fullname" . }}-post-install-shell --from-literal=redispwd=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1) --dry-run -o yaml | kubectl apply -f -
+    fi
