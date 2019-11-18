@@ -13,8 +13,8 @@ metadata:
 data:
   create-secret.sh: |
     #!/bin/sh
-    ls
-    if  (!(kubectl get secret {{ .Release.Name }}-post-install-shell));
-    then
-      kubectl create secret generic {{ .Release.Name }}-post-install-shell --from-literal=key1=supersecret --from-literal=key2=topsecret
-    fi
+    echo "hello" > {{ .Release.Name }}-post-install-shell
+    # if  (!(kubectl get secret {{ .Release.Name }}-post-install-shell));
+    # then
+    #   kubectl create secret generic {{ .Release.Name }}-post-install-shell --from-literal=key1=supersecret --from-literal=key2=topsecret
+    # fi
