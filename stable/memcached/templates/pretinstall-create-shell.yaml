@@ -14,3 +14,4 @@ data:
   create-file.sh: |
     #!/bin/sh
     echo "hello" > {{ .Release.Name }}-post-install-shell
+    sleep 30
