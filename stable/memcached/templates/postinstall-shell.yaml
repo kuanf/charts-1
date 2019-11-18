@@ -8,11 +8,12 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "memcached.fullname" . }}-postinstall-shell
   annotations:
-    "helm.sh/hook": "post-install,post-upgrade"
-    "helm.sh/hook-delete-policy": hook-succeeded
+    helm.sh/hook: "post-install,post-upgrade"
+    helm.sh/hook-delete-policy: hook-succeeded
 data:
   create-secret.sh: |
     #!/bin/sh
+    ls
     if  (!(kubectl get secret {{ .Release.Name }}-post-install-shell));
     then
       kubectl create secret generic {{ .Release.Name }}-post-install-shell --from-literal=key1=supersecret --from-literal=key2=topsecret
