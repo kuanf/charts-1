@@ -28,3 +28,4 @@ spec:
         configMap:
           name: {{ template "memcached.fullname" . }}-preinstall-create-shell
           defaultMode: 0755
+      restartPolicy: OnFailure
