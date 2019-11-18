@@ -16,6 +16,7 @@ spec:
       name: {{ template "memcached.fullname" . }}-preinstall-run-shell
     spec:
       containers:
+        image: "alpine:latest"
         - name: {{ template "memcached.fullname" . }}-preinstall-run-shell
           command:
           - /test/create-file.sh
