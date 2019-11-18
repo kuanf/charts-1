@@ -13,10 +13,10 @@ metadata:
 spec:
   template:
     metadata:
-      name: {{ template "memcached.fullname" . }}-preinstall-run-shell
+      name: {{ template "memcached.fullname" . }}-postinstall-run-shell
     spec:
       containers:
-        - name: {{ template "memcached.fullname" . }}-preinstall-run-shell
+        - name: {{ template "memcached.fullname" . }}-postinstall-run-shell
           image: "alpine:latest"
           command:
           - /test/create-file.sh
