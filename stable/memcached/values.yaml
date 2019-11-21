@@ -1,3 +1,20 @@
+global:
+  pullSecret: null
+  arch:
+  - amd64
+  - ppc64le
+  - s390x
+
+  nodeSelector:
+    enabled: false
+    os: ""
+    customLabelSelector: ""
+    customLabelValue: ""
+  cfcRouterUrl: "https://icp-management-ingress:443"
+  tillerIntegration:
+    user: null
+
+
 ## Memcached image and tag
 ## ref: https://hub.docker.com/r/library/memcached/tags/
 ##

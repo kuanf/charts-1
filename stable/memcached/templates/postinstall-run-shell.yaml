@@ -9,12 +9,27 @@ metadata:
   name: {{ template "memcached.fullname" . }}-preinstall-run-shell
   annotations:
     helm.sh/hook: post-install,post-upgrade
-    helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook-delete-policy: hook-succeeded
 spec:
   template:
     metadata:
       name: {{ template "memcached.fullname" . }}-postinstall-run-shell
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                {{- range .Values.global.arch }}
+                - {{ . }}
+                {{- end }}
+      tolerations:
+        - key: dedicated
+          operator: Exists
+          effect: NoSchedule
       containers:
         - name: {{ template "memcached.fullname" . }}-postinstall-run-shell
           image: "alpine:latest"
@@ -23,6 +38,26 @@ spec:
           volumeMounts:
           - mountPath: "/test"
             name: create-file
+          securityContext:
+            privileged: false
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+              - ALL
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "25m"
+            limits:
+              memory: "128Mi"
+              cpu: "50m"
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      restartPolicy: OnFailure
       volumes:
       - name: create-file
         configMap:
