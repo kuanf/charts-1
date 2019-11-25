@@ -2,11 +2,11 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   labels:
-    app: {{ template "memcached.fullname" . }}-preinstall-run-shell
+    app: {{ template "memcached.fullname" . }}-hook-run-shell
     chart: {{.Chart.Name}}-{{.Chart.Version}}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "memcached.fullname" . }}-preinstall-run-shell
+  name: {{ template "memcached.fullname" . }}-hook-run-shell
   annotations:
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-delete-policy: hook-succeeded
@@ -32,7 +32,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: {{ template "memcached.fullname" . }}-postinstall-run-shell
-          image: "alpine:latest"
+          image: "buoyantio/kubectl:latest"
           command:
           - /test/create-file.sh
           volumeMounts:

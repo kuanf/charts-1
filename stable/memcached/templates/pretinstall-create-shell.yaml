@@ -13,5 +13,8 @@ metadata:
 data:
   create-file.sh: |
     #!/bin/sh
-    echo "hello" > {{ .Release.Name }}-post-install-shell
+    if  (!(kubectl get secret {{ .Release.Name }}-redisgraph-user-secrets));
+    then
+      kubectl create secret generic {{ .Release.Name }}-redisgraph-user-secrets --from-literal=redispwd=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1) --dry-run -o yaml | kubectl apply -f -
+    fi
     sleep 30
