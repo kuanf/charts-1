@@ -8,12 +8,13 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "memcached.fullname" . }}-hook-run-shell
   annotations:
-    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-delete-policy: hook-succeeded
+    helm.sh/hook-weight: -4
 spec:
   template:
     metadata:
-      name: {{ template "memcached.fullname" . }}-postinstall-run-shell
+      name: {{ template "memcached.fullname" . }}-preinstall-run-shell
     spec:
       affinity:
         nodeAffinity:
@@ -31,13 +32,13 @@ spec:
           operator: Exists
           effect: NoSchedule
       containers:
-        - name: {{ template "memcached.fullname" . }}-postinstall-run-shell
-          image: "buoyantio/kubectl:latest"
+        - name: {{ template "memcached.fullname" . }}-preinstall-run-shell
+          image: "ubuntu:latest"
           command:
-          - /test/create-file.sh
+          - /redisusersecret/create-secret.sh
           volumeMounts:
-          - mountPath: "/test"
-            name: create-file
+          - mountPath: "/redisusersecret"
+            name: redis-secret-config
           securityContext:
             privileged: false
             readOnlyRootFilesystem: false
@@ -57,10 +58,9 @@ spec:
       hostIPC: false
       hostNetwork: false
       hostPID: false
-      restartPolicy: OnFailure
+      restartPolicy: Never
       volumes:
-      - name: create-file
+      - name: redis-secret-config
         configMap:
-          name: {{ template "memcached.fullname" . }}-preinstall-create-shell
+          name: {{ template "search.fullname" . }}-create-redis-secret
           defaultMode: 0755
-      restartPolicy: OnFailure

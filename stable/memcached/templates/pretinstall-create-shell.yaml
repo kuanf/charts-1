@@ -2,17 +2,22 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    app: {{ template "memcached.fullname" . }}-preinstall-create-shell
+    app: {{ template "memcached.fullname" . }}-create-redis-secret
     chart: {{.Chart.Name}}-{{.Chart.Version}}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "memcached.fullname" . }}-preinstall-create-shell
+  name: {{ template "memcached.fullname" . }}-create-redis-secret
   annotations:
     helm.sh/hook: pre-install,post-upgrade
     helm.sh/hook-delete-policy: before-hook-creation
 data:
   create-file.sh: |
-    #!/bin/sh
+    !/bin/sh
+    sudo apt-get update && sudo apt-get install -y apt-transport-https
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+    sudo apt-get update
+    sudo apt-get install -y kubectl    
     if  (!(kubectl get secret {{ .Release.Name }}-redisgraph-user-secrets));
     then
       kubectl create secret generic {{ .Release.Name }}-redisgraph-user-secrets --from-literal=redispwd=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1) --dry-run -o yaml | kubectl apply -f -
