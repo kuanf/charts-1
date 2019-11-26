@@ -13,11 +13,11 @@ metadata:
 data:
   create-secret.sh: |
     #!/bin/sh
-    sudo apt-get update && sudo apt-get install -y apt-transport-https
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-    sudo apt-get update
-    sudo apt-get install -y kubectl    
+    apt-get update && apt-get install -y apt-transport-https
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+    apt-get update
+    apt-get install -y kubectl    
     if  (!(kubectl get secret {{ .Release.Name }}-redisgraph-user-secrets));
     then
       kubectl create secret generic {{ .Release.Name }}-redisgraph-user-secrets --from-literal=redispwd=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1) --dry-run -o yaml | kubectl apply -f -
