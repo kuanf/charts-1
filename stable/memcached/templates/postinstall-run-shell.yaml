@@ -39,11 +39,7 @@ spec:
           - mountPath: "/redisusersecret"
             name: redis-secret-config
           securityContext:
-            privileged: false
-            readOnlyRootFilesystem: false
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            runAsUser: 1000
+            runAsRoot: true
             capabilities:
               drop:
               - ALL
