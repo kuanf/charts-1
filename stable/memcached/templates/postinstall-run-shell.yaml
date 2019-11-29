@@ -6,10 +6,15 @@ metadata:
     chart: {{.Chart.Name}}-{{.Chart.Version}}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "memcached.name" . }}
+    helm.sh/chart: {{ template "memcached.chart" . }}
   name: {{ template "memcached.fullname" . }}-hook-run-shell
   annotations:
-    helm.sh/hook: "pre-install,pre-upgrade"
-    helm.sh/hook-delete-policy: "hook-succeeded"
+    "helm.sh/hook": "pre-install,pre-upgrade"
+    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
+    scheduler.alpha.kubernetes.io/critical-pod: ''
 spec:
   template:
     metadata:
